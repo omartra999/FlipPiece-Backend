@@ -4,6 +4,12 @@ Welcome to the **Flip-Piece** backend!
 This project powers a multilingual online shop for handmade goods, fashion, recycled furniture, graphic designs, events, and workshops.
 
 ---
+## 👀  FOR YANNICK:
+
+Welcome, reviewer! Here’s everything you need to know to review the progress and code quality of the Flip-Piece backend.
+- [TheYannickFiles.md](./TheYannickFiles.md)
+
+---
 
 ## 📦 Tech Stack
 

@@ -109,4 +109,4 @@ This project powers a multilingual marketplace for handmade goods, fashion, recy
 ---
 
 **Happy coding!**  
-*Flip-Piece Backend Team*
+*Flip-Piece Backend Team

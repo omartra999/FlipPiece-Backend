@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     confirmationCode: {type: DataTypes.STRING, allowNull: true},
     firstName: {type: DataTypes.STRING, allowNull: false},
     lastName: {type: DataTypes.STRING, allowNull: false},
+    isAdmin: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
   
   }, {
     sequelize,

@@ -4,10 +4,14 @@ const { Op } = require('sequelize');
 exports.createProduct = async (req, res) => {
     try {
         const { title, description, price, stock, category, options, isShippable, isPickupOnly, images, thumbnail} = req.body;
-
+        const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
         // Basic validation
         if (!title || !price || !category) {
             return res.status(400).json({ message: 'Fill out all required fields.' });
+        }
+
+        if (typeof price !== 'number' || price <= 0) {
+        return res.status(400).json({ message: 'Price must be a positive number.' });
         }
 
         // Create product
@@ -16,7 +20,7 @@ exports.createProduct = async (req, res) => {
             description,
             price,
             category,
-            options,
+            options: parsedOptions,
             isShippable,
             isPickupOnly,
             images,
@@ -70,6 +74,7 @@ exports.updateProduct = async (req, res) => {
     try{
         const productId = req.params.id;
         const { title, description, stock, price, category, options, isShippable, isPickupOnly, images, thumbnail } = req.body;
+        const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
 
         // Find product
         const product = await Product.findByPk(productId);
@@ -83,10 +88,11 @@ exports.updateProduct = async (req, res) => {
             description,
             price,
             category,
-            options,
+            options: parsedOptions,
             isShippable,
             isPickupOnly,
             images,
+            stock,
             thumbnail
         });
 

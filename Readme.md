@@ -131,7 +131,7 @@ This project powers a multilingual online shop for handmade goods, fashion, recy
 
 ## 🗂️ Next Steps
 
-- See [UserStories.md](../UserStories.md) for full requirements and user stories.
+- See [UserStories.md](./UserStories.md) for full requirements and user stories.
 - Continue with order/checkout, wishlist, and advanced features!
 
 ---

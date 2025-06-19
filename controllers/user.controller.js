@@ -1,11 +1,8 @@
-const { User } = require('../models');
+const userService = require('../services/user.service');
 
 exports.profile = async (req, res) => {
   try {
-    // req.user should be set by auth middleware
-    const user = await User.findByPk(req.user.id, {
-      attributes: ['id', 'username', 'email', 'firstName', 'lastName']
-    });
+    const user = await userService.getUserProfile(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }

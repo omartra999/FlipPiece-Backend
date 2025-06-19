@@ -14,14 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
+    firebaseUid: {type: DataTypes.STRING, allowNull: false, unique: true},
     username: {type: DataTypes.STRING, allowNull: false, unique: true},
     email: {type: DataTypes.STRING, allowNull: false, unique: true},
-    password: {type: DataTypes.STRING, allowNull: false},
-    isActive: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
-    confirmationCode: {type: DataTypes.STRING, allowNull: true},
     firstName: {type: DataTypes.STRING, allowNull: false},
     lastName: {type: DataTypes.STRING, allowNull: false},
     isAdmin: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
+    address: {type: DataTypes.JSON, allowNull: true},
   
   }, {
     sequelize,

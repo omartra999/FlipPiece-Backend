@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Cart.belongsTo(models.User, {
-        foreignKey: 'userId',
+        foreignKey: 'firebaseUid',
+        targetKey: 'firebaseUid',
         as: 'user'
       });
       Cart.hasMany(models.CartItem, {
@@ -22,9 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Cart.init({
-    userId: DataTypes.INTEGER,
-    
-    
+    firebaseUid: {type: DataTypes.STRING, allowNull: false, unique: true},
   }, {
     sequelize,
     modelName: 'Cart',

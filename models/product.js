@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     description: DataTypes.TEXT,
     price: DataTypes.DECIMAL,
-    category: DataTypes.ENUM('fashion', 'möbel', 'Design'),
+    category: DataTypes.ENUM('fashion', 'möbel', 'design'),
     stock: DataTypes.INTEGER,
     options: DataTypes.JSON,
     isShippable: DataTypes.BOOLEAN,
@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     thumbnail: DataTypes.STRING}, {
     sequelize,
     modelName: 'Product',
+    tableName: 'product',
   });
   return Product;
 };

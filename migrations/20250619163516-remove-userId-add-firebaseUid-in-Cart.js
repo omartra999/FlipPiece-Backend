@@ -9,8 +9,8 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.removeColumn('Cart', 'userId');
-    await queryInterface.addColumn('Cart', 'firebaseUid', { type: Sequelize.STRING, allowNull: false });
+    //await queryInterface.removeColumn('user', 'userId');
+    await queryInterface.addColumn('cart', 'firebaseUid', { type: Sequelize.STRING, allowNull: false });
   },
 
   async down (queryInterface, Sequelize) {
@@ -20,7 +20,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeColumn('Cart', 'firebaseUid');
-    await queryInterface.addColumn('Cart', 'userId', { type: Sequelize.INTEGER, allowNull: false });
+    await queryInterface.removeColumn('cart', 'firebaseUid');
+    //await queryInterface.addColumn('cart', 'userId', { type: Sequelize.INTEGER, allowNull: false });
   }
 };

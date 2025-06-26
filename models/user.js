@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate() {
       // define association here
+      User.hasMany(models.Order, { foreignKey: 'firebaseUid', sourceKey: 'firebaseUid' });
     }
   }
   User.init({

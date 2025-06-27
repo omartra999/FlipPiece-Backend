@@ -1,8 +1,15 @@
-const Order = require('../models');
+const { Order, User } = require('../models');
 
 exports.createOrder = async (orderData) => {
   try {
-    const order = await Order.Order.create(orderData);
+    // Generate order number if not provided
+    if (!orderData.orderNumber) {
+      const timestamp = Date.now().toString().slice(-8);
+      const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+      orderData.orderNumber = `FP-${timestamp}-${random}`;
+    }
+    
+    const order = await Order.create(orderData);
     return order;
   } catch (error) {
     console.error('Error creating order:', error);
@@ -12,9 +19,9 @@ exports.createOrder = async (orderData) => {
 
 exports.getOrderById = async (orderId) => {
   try {
-    const order = await Order.Order.findByPk(orderId, {
+    const order = await Order.findByPk(orderId, {
       include: [{
-        model: Order.User,
+        model: User,
         as: 'user'
       }]
     });
@@ -28,12 +35,12 @@ exports.getOrderById = async (orderId) => {
 exports.getOrdersByUser = async (firebaseUid, page = 1, limit = 10) => {
   try {
     const offset = (page - 1) * limit;
-    const orders = await Order.Order.findAndCountAll({
+    const orders = await Order.findAndCountAll({
       where: { firebaseUid },
       include: [{
-        model: Order.User,
+        model: User,
         as: 'user',
-        attributes: ['username', 'email', 'firstName', 'lastName'] // Only select needed fields
+        attributes: ['username', 'email', 'firstName', 'lastName']
       }],
       limit,
       offset,
@@ -57,7 +64,7 @@ exports.getOrdersByUser = async (firebaseUid, page = 1, limit = 10) => {
 
 exports.getOrderStatus = async (orderId) => {
   try {
-    const order = await Order.Order.findByPk(orderId);
+    const order = await Order.findByPk(orderId);
     if (!order) {
       throw new Error('Order not found');
     }
@@ -71,7 +78,7 @@ exports.getOrderStatus = async (orderId) => {
 
 exports.setOrderStatus = async (orderId, status) => {
   try {
-    const order = await Order.Order.findByPk(orderId);
+    const order = await Order.findByPk(orderId);
     if (!order) {
       throw new Error('Order not found');
     }

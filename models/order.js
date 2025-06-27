@@ -95,12 +95,16 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Order',
     tableName: 'order',
     hooks: {
-      beforeCreate: (order) => {
+      beforeCreate: async (order, options) => {
+        console.log('beforeCreate hook triggered for Order');
+        console.log('Current orderNumber:', order.orderNumber);
+        
         // Generate order number if not provided
         if (!order.orderNumber) {
           const timestamp = Date.now().toString().slice(-8);
           const random = Math.random().toString(36).substr(2, 4).toUpperCase();
           order.orderNumber = `FP-${timestamp}-${random}`;
+          console.log('Generated orderNumber:', order.orderNumber);
         }
       }
     }

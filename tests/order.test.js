@@ -5,10 +5,10 @@ describe('Order Service', () => {
   let testUser, testProduct, testOrder;
 
   beforeEach(async () => {
-    // Clean up and create test data
-    await Order.sync({ force: true });
-    await User.sync({ force: true });
-    await Product.sync({ force: true });
+    // Clean up data only, not schema
+    await Order.destroy({ where: {} });
+    await User.destroy({ where: {} });
+    await Product.destroy({ where: {} });
 
     // Create test user
     testUser = await User.create({
@@ -65,6 +65,7 @@ describe('Order Service', () => {
       expect(order.firebaseUid).toBe(testUser.firebaseUid);
       expect(order.total).toBe('29.99');
       expect(order.status).toBe('pending');
+      expect(order.orderNumber).toBeTruthy(); // Should be auto-generated
       expect(order.shippingAddress).toEqual(orderData.shippingAddress);
     });
 

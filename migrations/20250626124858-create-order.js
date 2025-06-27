@@ -18,6 +18,11 @@ module.exports = {
           key: 'firebaseUid'
         },
       },
+      orderNumber: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+      },
       shippingAddress: {
         type: Sequelize.JSON,
         allowNull: false
@@ -26,13 +31,50 @@ module.exports = {
         type: Sequelize.JSON,
         allowNull: false
       },
+      subtotal: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0
+      },
+      shippingCost: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0
+      },
+      tax: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0
+      },
       total: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false
       },
       status: {
+        type: Sequelize.ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'),
+        allowNull: false,
+        defaultValue: 'pending'
+      },
+      paymentStatus: {
+        type: Sequelize.ENUM('pending', 'paid', 'failed', 'refunded'),
+        allowNull: false,
+        defaultValue: 'pending'
+      },
+      paymentMethod: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
+      },
+      notes: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      estimatedDelivery: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      trackingNumber: {
+        type: Sequelize.STRING,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,

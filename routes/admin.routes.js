@@ -1,0 +1,17 @@
+const express = require('express');
+const adminRouter = express.Router();
+const adminMiddleware = require('../middlewares/admin.middleware.js');
+const orderController = require('../controllers/order.controller.js');
+const productController = require('../controllers/product.controller.js');
+const userController = require('../controllers/user.controller.js');
+
+adminRouter.get('/orders', adminMiddleware, orderController.getAllOrders);
+adminRouter.get('/orders/:id', adminMiddleware, orderController.getOrderById);
+adminRouter.put('/orders/:id/status', adminMiddleware, orderController.setOrderStatus);
+adminRouter.get('/products', adminMiddleware, productController.getAllProducts);
+adminRouter.get('/products/:id', adminMiddleware, productController.getProductById);
+adminRouter.post('/products', adminMiddleware, productController.createProduct);
+adminRouter.put('/products/:id', adminMiddleware, productController.updateProduct);
+adminRouter.delete('/products/:id', adminMiddleware, productController.deleteProduct);
+adminRouter.get('/users', adminMiddleware, userController.getAllUsers);
+adminRouter.get('/users/:id', adminMiddleware, userController.getUserById);

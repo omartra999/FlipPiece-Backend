@@ -5,8 +5,8 @@ const cors = require('cors');
 const db = require('./models/index.js');
 
 const userRouter = require('./routes/user.routes.js');
-const authRouter = require('./routes/auth.routes.js');
 const productRouter = require('./routes/product.routes.js');
+const orderRouter = require('./routes/order.routes.js');
 
 db.sequelize.authenticate()
   .then(() => console.log('Database connected!'))
@@ -24,8 +24,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use('/api/users', userRouter);
-app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
+app.use('/api/orders', orderRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on: ${URL}:${PORT}.`);

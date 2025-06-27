@@ -25,16 +25,30 @@ exports.getOrderById = async (orderId) => {
   }
 }
 
-exports.getOrdersByUser = async (firebaseUid) => {
+exports.getOrdersByUser = async (firebaseUid, page = 1, limit = 10) => {
   try {
-    const orders = await Order.Order.findAll({
+    const offset = (page - 1) * limit;
+    const orders = await Order.Order.findAndCountAll({
       where: { firebaseUid },
       include: [{
         model: Order.User,
-        as: 'user'
-      }]
+        as: 'user',
+        attributes: ['username', 'email', 'firstName', 'lastName'] // Only select needed fields
+      }],
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']]
     });
-    return orders;
+    
+    return {
+      orders: orders.rows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(orders.count / limit),
+        totalItems: orders.count,
+        itemsPerPage: limit
+      }
+    };
   } catch (error) {
     console.error('Error fetching orders for user:', error);
     throw error;

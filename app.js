@@ -2,6 +2,9 @@ const express = require('express');
 const { PORT, URL } = require('./config/env.js');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 const db = require('./models/index.js');
 
 const userRouter = require('./routes/user.routes.js');
@@ -17,11 +20,27 @@ db.sequelize.authenticate()
 //  console.log("Drop and re-sync db.");
 // });
 
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+
 const app = express();
-app.use(express.json());
+
+// Security middleware
+app.use(helmet());
+app.use(compression());
+app.use(limiter);
+
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
 
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);

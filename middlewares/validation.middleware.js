@@ -50,6 +50,14 @@ const userProfileSchema = Joi.object({
   }).optional()
 });
 
+// Gallery validation schema
+const gallerySchema = Joi.object({
+  title: Joi.string().min(1).max(255).required(),
+  description: Joi.string().min(1).max(2000).optional(),
+  mediaUrl: Joi.string().required(),
+  mediaType: Joi.string().valid('image', 'video').required()
+});
+
 // Validation middleware factory
 const validate = (schema) => {
   return (req, res, next) => {
@@ -67,5 +75,6 @@ const validate = (schema) => {
 module.exports = {
   validateProduct: validate(productSchema),
   validateOrder: validate(orderSchema),
-  validateUserProfile: validate(userProfileSchema)
+  validateUserProfile: validate(userProfileSchema),
+  validateGallery: validate(gallerySchema)
 }; 

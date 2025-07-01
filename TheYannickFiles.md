@@ -1,83 +1,73 @@
-# 👀 Flip-Piece Backend Reviewer Guide
+# 👀 FlipPiece Backend — Reviewer Guide for Yannick
 
-Welcome, Yannick! Here’s everything you need to know to review the progress and code quality of the Flip-Piece backend.
+Hey Yannick! 👋
+
+Thanks for helping review the FlipPiece backend. Here’s a quick guide to make your review smooth and effective.
 
 ---
 
-## 📂 Project Structure
-
-- **/models** — Sequelize models (User, Product, Cart, etc.)
-- **/controllers** — Route logic for auth, products, cart, etc.
+## 🗂️ Project Structure
+- **/models** — Sequelize models (User, Product, Order, etc.)
+- **/controllers** — Route logic for each resource
+- **/services** — Business logic and external API calls (DHL, Stripe)
 - **/routes** — Express route definitions
-- **/middlewares** — Auth and admin middleware
-- **/seeders** — Test data for users and products
-- **/migrations** — Database schema migrations
-- **/utils** — Utility functions (e.g., email sending)
-- **/config** — Environment and DB config
-- **/tests** — (If present) Automated tests
+- **/middlewares** — Validation, authentication, admin checks
+- **/config** — Environment and third-party config
+- **/tests** — Automated tests
 
 ---
 
-## ✅ Features to Review
+## ✅ What to Review
 
-- User registration, login, and email confirmation
-- JWT authentication and admin protection
-- Product CRUD (admin-only for create/update/delete)
-- Product search, filter, and category endpoints
-- Shopping cart (add, update, remove, view)
-- Database seeding for users and products
-- Error handling and validation
+- Admin/user role separation and protected routes
+- Product CRUD and validation
+- Cart and order logic
+- DHL shipment creation (admin only) and tracking
+- Input validation (Joi) and error handling
+- Security middleware (helmet, rate limiting, etc.)
+- Unit tests for core features
 
 ---
 
 ## 🧪 How to Test
-
-1. **Clone the repo and install dependencies**
+1. **Clone and install:**
    ```bash
    git clone <repo-url>
-   cd flip-piece-backend
+   cd FlipPiece-Backend
    npm install
    ```
-
-2. **Set up environment variables**  
-   (see `.env.example` or ask the author)
-
-3. **Run migrations and seeders**
+2. **Set up environment variables:**  
+   Ask for `.env.development.local` or see the example.
+3. **Run migrations and seeders:**
    ```bash
    npx sequelize-cli db:migrate
    npx sequelize-cli db:seed:all
    ```
-
-4. **Start the server**
+4. **Start the server:**
    ```bash
    npm run dev
    ```
 
-5. **Test endpoints with Postman or curl**  
-   See the [README.md](./Readme.md) for endpoint details and sample requests.
 
 ---
 
 ## 📝 Review Checklist
-
-- [ ] Code is organized and follows project structure
-- [ ] Models match the migrations and seeders
+- [ ] Code is organized and follows the structure above
+- [ ] Models match migrations and are normalized
 - [ ] Controllers handle validation and errors
 - [ ] Auth and admin middleware work as expected
-- [ ] Only admins can create/update/delete products
-- [ ] Cart logic checks stock and handles options
-- [ ] All endpoints return appropriate status codes and messages
-- [ ] README is up to date and clear
-- [ ] (Optional) Tests are present and passing
+- [ ] Only admins can create shipments/products
+- [ ] Cart/order logic is robust
+- [ ] All endpoints return appropriate status codes/messages
+- [ ] README and docs are up to date
+- [ ] Tests are present and passing
 
 ---
 
-## 🗣️ Feedback
-
-- Leave comments directly in the code (pull request or code review tool)
-- Or, summarize your feedback in a document or email
+## 💬 Feedback
+- Leave comments in the code (pull request or code review tool)
+- Or summarize your feedback in a doc/email
 
 ---
-
-Thank you for reviewing!  
-If you have questions, reach out to the author.
+Thanks again, Yannick!  
+If you have questions, ping me anytime.

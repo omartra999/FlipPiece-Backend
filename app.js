@@ -1,15 +1,16 @@
 const express = require('express');
 const { PORT, URL } = require('./config/env.js');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const helmet = require('helmet');
+const cors = require('cors'); //to be used: for cross-origin resource sharing after creating frontend
+const helmet = require('helmet'); //to be used: for security
 const rateLimit = require('express-rate-limit');
-const compression = require('compression');
+const compression = require('compression'); //to be used: for request compression
 const db = require('./models/index.js');
 
 const userRouter = require('./routes/user.routes.js');
 const productRouter = require('./routes/product.routes.js');
 const orderRouter = require('./routes/order.routes.js');
+const shipmentRouter = require('./routes/shipment.routes.js');
 
 db.sequelize.authenticate()
   .then(() => console.log('Database connected!'))
@@ -45,6 +46,8 @@ app.use(cors({
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/shipments', shipmentRouter);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on: ${URL}:${PORT}.`);

@@ -58,6 +58,33 @@ const gallerySchema = Joi.object({
   mediaType: Joi.string().valid('image', 'video').required()
 });
 
+// DHL validation schema
+// DHL Shipment validation schema (starter)
+const dhlShipmentSchema = Joi.object({
+  plannedShippingDateAndTime: Joi.string().isoDate().required(),
+  productCode: Joi.string().required(),
+  customerDetails: Joi.object({
+    shipperDetails: Joi.object({
+      name: Joi.string().required(),
+      postalAddress: Joi.object({
+        postalCode: Joi.string().required(),
+        cityName: Joi.string().required(),
+        countryCode: Joi.string().length(2).required(),
+        addressLine1: Joi.string().required()
+      }).required()
+    }).required(),
+    receiverDetails: Joi.object({
+      name: Joi.string().required(),
+      postalAddress: Joi.object({
+        postalCode: Joi.string().required(),
+        cityName: Joi.string().required(),
+        countryCode: Joi.string().length(2).required(),
+        addressLine1: Joi.string().required()
+      }).required()
+    }).required()
+  }).required(),
+});
+
 // Validation middleware factory
 const validate = (schema) => {
   return (req, res, next) => {
@@ -76,5 +103,6 @@ module.exports = {
   validateProduct: validate(productSchema),
   validateOrder: validate(orderSchema),
   validateUserProfile: validate(userProfileSchema),
-  validateGallery: validate(gallerySchema)
+  validateGallery: validate(gallerySchema),
+  validateDHL: validate(dhlShipmentSchema)
 }; 

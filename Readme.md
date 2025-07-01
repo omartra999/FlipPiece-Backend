@@ -7,8 +7,7 @@ Welcome to the **FlipPiece** backend! This project powers a multilingual online 
 ## 🛠️ Tech Stack
 - **Node.js** (Express.js)
 - **PostgreSQL** (Sequelize ORM)
-- **JWT** for authentication
-- **Firebase Admin** for user management
+- **Firebase Admin** for authentication and user management
 - **DHL API** for shipment creation and tracking
 - **Stripe** for payments (planned)
 - **Joi** for validation
@@ -20,7 +19,7 @@ Welcome to the **FlipPiece** backend! This project powers a multilingual online 
 ---
 
 ## ✅ Features
-- User registration, login, and JWT authentication
+- User authentication via Firebase (login, registration handled by Firebase)
 - Email confirmation and strong password validation
 - Admin and user roles with protected routes
 - Product CRUD, categories, stock, options, images
@@ -68,7 +67,6 @@ Welcome to the **FlipPiece** backend! This project powers a multilingual online 
      ```
      PORT=5500
      URL=http://localhost
-     JWT_SECRET=your_jwt_secret
      DB_HOST=localhost
      DB_PORT=5432
      DB_USERNAME=your_db_user
@@ -81,13 +79,17 @@ Welcome to the **FlipPiece** backend! This project powers a multilingual online 
      FRONTEND_URL=http://localhost:3000
      ```
 
-3. **Run migrations and seeders:**
+3. **Set up Firebase:**
+   - Add your Firebase service account key to `config/firebaseServiceAccount.json`
+   - Ensure Firebase Admin is properly configured
+
+4. **Run migrations and seeders:**
    ```bash
    npx sequelize-cli db:migrate
-   npx sequelize-cli db:seed:all
+   
    ```
 
-4. **Start the server:**
+5. **Start the server:**
    ```bash
    npm run dev
    ```
@@ -97,11 +99,12 @@ Welcome to the **FlipPiece** backend! This project powers a multilingual online 
 
 ## 📦 API Endpoints
 
-### Auth (Firebase-based)
-- User authentication is handled via Firebase Admin SDK
+### Authentication
+- User authentication is handled via Firebase (frontend)
+- Backend expects Firebase ID tokens in Authorization header: `Bearer <firebase_id_token>`
 
 ### User
-- `GET /api/users/profile` — Get user profile (JWT required)
+- `GET /api/users/profile` — Get user profile (Firebase auth required)
 
 ### Products
 - `GET /api/products` — List all products
@@ -131,12 +134,20 @@ Welcome to the **FlipPiece** backend! This project powers a multilingual online 
 ### Gallery
 - `GET /api/gallery` — Get all gallery items
 - `GET /api/gallery/:id` — Get gallery item by ID
-- `POST /api/gallery` — Create gallery item (JWT required)
-- `PUT /api/gallery/:id` — Update gallery item (JWT required)
+- `POST /api/gallery` — Create gallery item (Firebase auth required)
+- `PUT /api/gallery/:id` — Update gallery item (Firebase auth required)
 
 ### Shipping (DHL)
 - `POST /api/shipments` — Create shipment (admin only)
 - `GET /api/shipments/track/:trackingNumber` — Track shipment
+
+---
+
+## 🔐 Authentication Flow
+1. Frontend authenticates users via Firebase Auth
+2. Frontend sends Firebase ID token in Authorization header
+3. Backend middleware verifies the token using Firebase Admin
+4. User data is attached to `req.user` for use in controllers
 
 ---
 
@@ -161,4 +172,3 @@ Welcome to the **FlipPiece** backend! This project powers a multilingual online 
 - See [TheYannickFiles.md](./TheYannickFiles.md) for a reviewer's guide.
 
 ---
-**Happy coding!**

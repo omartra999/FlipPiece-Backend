@@ -35,3 +35,7 @@ exports.getAllUsers = async () => {
   const users = await User.findAll();
   return users;
 };
+exports.getUserProfile = async (uid) => {
+  const user = await User.findOne({ where: { firebaseUid: uid } });
+  return user;
+};

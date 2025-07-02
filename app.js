@@ -11,6 +11,7 @@ const userRouter = require('./routes/user.routes.js');
 const productRouter = require('./routes/product.routes.js');
 const orderRouter = require('./routes/order.routes.js');
 const shipmentRouter = require('./routes/shipment.routes.js');
+const galleryRouter = require('./routes/gallery.routes.js');
 
 db.sequelize.authenticate()
   .then(() => console.log('Database connected!'))
@@ -31,8 +32,7 @@ const limiter = rateLimit({
 const app = express();
 
 // Security middleware
-app.use(helmet());
-app.use(compression());
+
 app.use(limiter);
 
 app.use(express.json({ limit: '10mb' }));
@@ -47,6 +47,7 @@ app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/shipments', shipmentRouter);
+app.use('/api/gallery', galleryRouter);
 
 
 app.listen(PORT, () => {

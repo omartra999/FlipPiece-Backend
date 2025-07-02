@@ -85,6 +85,14 @@ const dhlShipmentSchema = Joi.object({
   }).required(),
 });
 
+// Checkout validation schema
+const checkoutSchema = Joi.object({
+  cartItems: Joi.array().items(Joi.object({
+    productId: Joi.number().integer().positive().required(),
+    quantity: Joi.number().integer().positive().required()
+  })).min(1).required(),
+});
+
 // Validation middleware factory
 const validate = (schema) => {
   return (req, res, next) => {
@@ -104,5 +112,6 @@ module.exports = {
   validateOrder: validate(orderSchema),
   validateUserProfile: validate(userProfileSchema),
   validateGallery: validate(gallerySchema),
-  validateDHL: validate(dhlShipmentSchema)
+  validateDHL: validate(dhlShipmentSchema),
+  validateCheckout: validate(checkoutSchema)
 }; 

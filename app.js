@@ -12,6 +12,7 @@ const productRouter = require('./routes/product.routes.js');
 const orderRouter = require('./routes/order.routes.js');
 const shipmentRouter = require('./routes/shipment.routes.js');
 const galleryRouter = require('./routes/gallery.routes.js');
+const webhookRouter = require('./routes/webhook.routes.js');
 
 db.sequelize.authenticate()
   .then(() => console.log('Database connected!'))
@@ -48,6 +49,7 @@ app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/shipments', shipmentRouter);
 app.use('/api/gallery', galleryRouter);
+app.use('/api/webhook', webhookRouter);
 
 
 app.listen(PORT, () => {

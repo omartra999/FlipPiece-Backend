@@ -1,4 +1,6 @@
 const orderService = require('../services/order.service');
+const checkoutService = require('../services/checkout.service');
+const { Order } = require('../models');
 
 exports.createOrder = async (req, res) => {
   try {
@@ -58,3 +60,29 @@ exports.setOrderStatus = async (req, res) => {
     res.status(500).json({ error: 'Failed to set order status' });
   }
 }
+
+exports.checkout = async (req, res) => {
+  try {
+    // 1. Create the order (status: pending)
+    const orderData = req.body; // includes cart, addresses, user info, etc.
+    const order = await orderService.createOrder(orderData);
+
+    // 2. Create Stripe Checkout Session
+    const session = await checkoutService.createCheckoutSession(
+      req.body.cartItems, // [{name, price, quantity}]
+      req.body.successUrl,
+      req.body.cancelUrl,
+      order.id,
+      order.email
+    );
+
+    // 3. Save session ID to order
+    await order.update({ stripeSessionId: session.id });
+
+    // 4. Return session URL
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error('Error in checkout:', error);
+    res.status(500).json({ error: error.message });
+  }
+};

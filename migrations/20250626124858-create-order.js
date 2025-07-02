@@ -76,6 +76,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
+      stripeSessionId: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      stripePaymentIntentId: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

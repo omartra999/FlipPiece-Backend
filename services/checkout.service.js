@@ -6,9 +6,11 @@ const stripe = require('stripe')(_STRIPE_SECRET_KEY);
      * @param {Array} cartItems - Array of cart items = [{name, price, quantity}]
      * @param {String} successUrl - URL to redirect to after successful payment
      * @param {String} cancelUrl - URL to redirect to after payment cancellation
+     * @param {Number|String} orderId - The order's ID to link with Stripe session
+     * @param {String} email - Customer email (optional)
      */
 
-exports.createCheckoutSession = async (cartItems, successUrl, cancelUrl) => {
+exports.createCheckoutSession = async (cartItems, successUrl, cancelUrl, orderId, email) => {
     try {
         // Create a line items array
         const lineItems = cartItems.map(item => ({
@@ -29,10 +31,28 @@ exports.createCheckoutSession = async (cartItems, successUrl, cancelUrl) => {
             mode: 'payment',
             success_url: successUrl,
             cancel_url: cancelUrl,
+            shipping_address_collection: {
+                allowed_countries: ['DE'],
+            },
+            client_reference_id: orderId,
+            customer_email: email || undefined,
         });
         return session;
     } catch (error) {
         console.error('Error creating checkout session:', error);
+        throw error;
+    }
+}
+
+exports.createRefund = async (paymentIntentId, amount) => {
+    try {
+        const refund = await stripe.refunds.create({
+            payment_intent: paymentIntentId,
+            amount: amount,
+        });
+        return refund;
+    } catch (error) {
+        console.error('Error creating refund:', error);
         throw error;
     }
 }

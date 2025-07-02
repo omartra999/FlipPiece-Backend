@@ -93,6 +93,11 @@ const checkoutSchema = Joi.object({
   })).min(1).required(),
 });
 
+const refundSchema = Joi.object({
+  paymentIntentId: Joi.string().required(),
+  amount: Joi.number().positive().precision(2).required()
+});
+
 // Validation middleware factory
 const validate = (schema) => {
   return (req, res, next) => {
@@ -113,5 +118,6 @@ module.exports = {
   validateUserProfile: validate(userProfileSchema),
   validateGallery: validate(gallerySchema),
   validateDHL: validate(dhlShipmentSchema),
-  validateCheckout: validate(checkoutSchema)
+  validateCheckout: validate(checkoutSchema),
+  validateRefund: validate(refundSchema)
 }; 

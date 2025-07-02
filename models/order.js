@@ -89,7 +89,19 @@ module.exports = (sequelize, DataTypes) => {
     trackingNumber: {
       type: DataTypes.STRING,
       allowNull: true
-    }
+    },
+    stripeSessionId: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    stripePaymentIntentId: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
   }, {
     sequelize,
     modelName: 'Order',

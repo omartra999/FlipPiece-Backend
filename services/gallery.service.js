@@ -1,5 +1,4 @@
 const { Gallery } = require('../models');
-const { uploadFile } = require('../utils/firebaseStorage');
 
 exports.createGalleryItem = async ({ title, description, mediaUrl, mediaType }) => {
     return await Gallery.create({ title, description, mediaUrl, mediaType });

@@ -53,7 +53,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     totalPrice: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     selectedOptions: {
       type: DataTypes.JSON,
@@ -70,16 +71,11 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'OrderItem',
     tableName: 'order_item',
     hooks: {
-      beforeCreate: (orderItem) => {
-        // Calculate total price if not provided
-        if (!orderItem.totalPrice) {
-          orderItem.totalPrice = orderItem.unitPrice * orderItem.quantity;
-        }
-      },
-      beforeUpdate: (orderItem) => {
-        // Recalculate total price if quantity or unit price changes
-        if (orderItem.changed('quantity') || orderItem.changed('unitPrice')) {
-          orderItem.totalPrice = orderItem.unitPrice * orderItem.quantity;
+      beforeSave: (orderItem) => {
+        const quantity = Number(orderItem.quantity);
+        const unitPrice = Number(orderItem.unitPrice);
+        if (!isNaN(quantity) && !isNaN(unitPrice)) {
+          orderItem.totalPrice = unitPrice * quantity;
         }
       }
     }

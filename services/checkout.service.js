@@ -26,7 +26,7 @@ exports.createCheckoutSession = async (cartItems, successUrl, cancelUrl, orderId
 
         // Create a checkout session
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card', 'sepa_debit', 'giropay', 'sofort', 'paypal', 'bank_transfer'],
+            payment_method_types: ['card', 'sepa_debit', 'giropay', 'sofort', 'paypal'],
             line_items: lineItems,
             mode: 'payment',
             success_url: successUrl,

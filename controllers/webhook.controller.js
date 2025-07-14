@@ -25,10 +25,21 @@ exports.handleWebhook = async (req, res) => {
         case 'payment_intent.payment_failed':
             await webhookService.handlePaymentIntentFailed(event.data.object);
             break;
+        case 'charge.refunded':
+            webhookService.handleChargeRefunded(event.data.object);
+            break;
+        case 'mandate.updated':
+            webhookService.handleMandateUpdated(event.data.object);
+            break;
+        case 'payment_method.attached':
+            webhookService.handlePaymentMethodAttached(event.data.object);
+            break;
         default:
             console.log(`Unhandled event type ${event.type}`);
             break;
     }
 
+
     res.status(200).json({ received: true });
 }
+

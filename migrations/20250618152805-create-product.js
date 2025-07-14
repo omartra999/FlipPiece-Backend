@@ -45,6 +45,10 @@ module.exports = {
       images: {
         type: Sequelize.JSON
       },
+      thumbnail: {
+  type: Sequelize.STRING,
+  allowNull: true
+},
       
       createdAt: {
         allowNull: false,

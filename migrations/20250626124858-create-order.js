@@ -12,7 +12,7 @@ module.exports = {
       },
       firebaseUid: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true, 
         references: {
           model: 'user',
           key: 'firebaseUid'
@@ -23,14 +23,35 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      // Customer information (for guest checkout)
+      customerEmail: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      customerName: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      customerPhone: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      // Addresses (filled by Stripe webhook)
       shippingAddress: {
         type: Sequelize.JSON,
-        allowNull: false
+        allowNull: true
       },
       billingAddress: {
         type: Sequelize.JSON,
-        allowNull: false
+        allowNull: true
       },
+      // Items stored as JSON
+      items: {
+        type: Sequelize.JSON,
+        allowNull: false,
+        defaultValue: []
+      },
+      // Financial calculations
       subtotal: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
@@ -50,6 +71,12 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false
       },
+      currency: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'EUR'
+      },
+      // Order status
       status: {
         type: Sequelize.ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'),
         allowNull: false,
@@ -64,25 +91,42 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-      notes: {
-        type: Sequelize.TEXT,
-        allowNull: true
-      },
-      estimatedDelivery: {
-        type: Sequelize.DATE,
+      // DHL integration fields
+      dhlShipmentId: {
+        type: Sequelize.STRING,
         allowNull: true
       },
       trackingNumber: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      stripeSessionId: {
+      estimatedDelivery: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      shippingService: {
         type: Sequelize.STRING,
         allowNull: true
+      },
+      // Stripe integration fields
+      stripeSessionId: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true
       },
       stripePaymentIntentId: {
         type: Sequelize.STRING,
         allowNull: true
+      },
+      // Additional fields
+      notes: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      isGuest: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,
@@ -93,7 +137,17 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+
+    // Add indexes for better performance
+    await queryInterface.addIndex('order', ['firebaseUid']);
+    await queryInterface.addIndex('order', ['customerEmail']);
+    await queryInterface.addIndex('order', ['status']);
+    await queryInterface.addIndex('order', ['paymentStatus']);
+    await queryInterface.addIndex('order', ['stripeSessionId']);
+    await queryInterface.addIndex('order', ['trackingNumber']);
+    await queryInterface.addIndex('order', ['createdAt']);
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('order');
   }

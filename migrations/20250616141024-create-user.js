@@ -9,9 +9,22 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      firebaseUid: {
+  type: Sequelize.STRING,
+  allowNull: false,
+  unique: true
+},
       username: {
         allowNull: false,
         unique: true,
+        type: Sequelize.STRING
+      },
+      firstName: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      lastName: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       email: {
@@ -19,9 +32,14 @@ module.exports = {
         unique: true,
         type: Sequelize.STRING
       },
-      password: {
+      address:{
+        allowNull: true,
+        type: Sequelize.JSON
+      },
+      isAdmin: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,

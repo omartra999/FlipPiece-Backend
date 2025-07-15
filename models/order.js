@@ -98,7 +98,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     trackingNumber: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+      validate: {
+        isValidateTrackingNumber(value) {
+          if (value && !/^[0-9A-Z]{10,20}$/.test(value)) {
+            throw new Error('Invalid tracking number format');
+          }
+        }
+      },
     },
     estimatedDelivery: {
       type: DataTypes.DATE,
@@ -147,8 +154,17 @@ module.exports = (sequelize, DataTypes) => {
           order.subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
           order.total = parseFloat(order.subtotal) + parseFloat(order.shippingCost || 0) + parseFloat(order.tax || 0);
         }
+      },
+      afterUpdate: async (order, options) => {
+        // auto update status when tracking number is added
+        if (order.changed('trackingNumber') && order.trackingNumber) {
+          if(order.status === 'confirmed'){
+            await order.update({ status: 'shipped' }, { transaction: options.transaction });
+          }
+        }
       }
-    }
+    },
   });
+
   return Order;
 };

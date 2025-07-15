@@ -8,6 +8,11 @@ const { DHL_API_KEY, DHL_BASE_URL } = require('../config/dhlAdmin');
  */
 exports.trackShipment = async (trackingNumber) => {
     try {
+
+        if (!trackingNumber || typeof trackingNumber !== 'string') {
+            throw new Error('Invalid tracking number');
+        }
+
         const response = await axios.get(
             `${DHL_BASE_URL}/track/shipments/v2`,
             {
@@ -21,6 +26,15 @@ exports.trackShipment = async (trackingNumber) => {
         return response.data;
     } catch (error) {
         console.error('DHL tracking error:', error.response?.data || error.message);
+
+        if (error.response?.status === 404) {
+            throw new Error('Tracking number not found');
+        } else if (error.response?.status === 401) {
+            throw new Error('Unauthorized access - check your DHL API key');
+        } else if (error.code === 'ENOTFOUND') {
+            throw new Error('DHL API timeout - DHL API endpoint not reachable - check your network connection');
+        }
+
         throw error.response ? error.response.data : error;
     }
 };

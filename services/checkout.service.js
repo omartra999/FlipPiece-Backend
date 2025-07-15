@@ -11,6 +11,18 @@ const stripe = require('stripe')(_STRIPE_SECRET_KEY);
  */
 exports.createCheckoutSession = async (orderData, successUrl, cancelUrl, orderId, email) => {
     try {
+
+        // Validate required fields
+        if (!orderData || !orderId || !successUrl || !cancelUrl) {
+            throw new Error('Missing required parameters for checkout session');
+        }
+
+        try {
+            new URL(successUrl); // Validate URL format
+            new URL(cancelUrl); // Validate URL format
+        } catch (error) {
+            throw new Error('Invalid URL format for success or cancel URL');
+        }
         const {
             items = [],
             subtotal = 0,
@@ -21,6 +33,12 @@ exports.createCheckoutSession = async (orderData, successUrl, cancelUrl, orderId
             orderNumber = `Order-${orderId}`,
             customerName = 'Customer'
         } = orderData;
+
+        // Validate order totals
+        const calculatedTotal = subtotal + shippingCost + tax;
+        if (Math.abs(calculatedTotal - total) > 0.01) {
+            throw new Error('Order totals do not match: calculated total does not equal provided total');
+        }
 
         // Create line items for detailed breakdown
         const lineItems = [];

@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       validate: {
         isValidateTrackingNumber(value) {
-          if (value && !/^[0-9A-Z]{10,20}$/.test(value)) {
+          if (value && !/^[0-9]{10,12}$|^[A-Z]{2}[0-9]{9}[A-Z]{2}$/.test(value)) {
             throw new Error('Invalid tracking number format');
           }
         }
@@ -142,7 +142,7 @@ module.exports = (sequelize, DataTypes) => {
         // Generate order number
         if (!order.orderNumber) {
           const timestamp = Date.now().toString().slice(-8);
-          const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+          const random = Math.random().toString(36).substring(2, 6).toUpperCase();
           order.orderNumber = `FP-${timestamp}-${random}`;
         }
         
@@ -156,15 +156,26 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       afterUpdate: async (order, options) => {
-        // auto update status when tracking number is added
+        // Sync order status with payment/shipping status
+        if (order.changed('paymentStatus') && order.paymentStatus === 'paid') {
+          if (order.status === 'pending') {
+            await order.update({ status: 'confirmed' }, { 
+              transaction: options.transaction,
+              silent: true 
+            });
+          }
+        }
+        
         if (order.changed('trackingNumber') && order.trackingNumber) {
-          if(order.status === 'confirmed'){
-            await order.update({ status: 'shipped' }, { transaction: options.transaction });
+          if (order.status === 'confirmed') {
+            await order.update({ status: 'shipped' }, { 
+              transaction: options.transaction,
+              silent: true 
+            });
           }
         }
       }
-    },
+    }
   });
-
   return Order;
 };

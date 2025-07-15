@@ -8,11 +8,32 @@ const { Order } = require('../models');
 exports.trackShipment = async (req, res) => {
     try {
         const { trackingNumber } = req.params;
+
+        // Validate tracking number exists
+        if (!trackingNumber) {
+            return res.status(400).json({ error: 'Tracking number is required', code: 'MISSING_TRACKING_NUMBER' });
+        }
+
+        // Validate tracking number format
+        if (typeof trackingNumber !== 'string') {
+            return res.status(400).json({ error: 'Invalid tracking number', code: 'INVALID_TRACKING_NUMBER' });
+        }
+
+        // Call DHL service to track shipment
         const result = await dhlService.trackShipment(trackingNumber);
-        res.status(200).json(result);
+        res.status(200).json({
+            success: true,
+            data: result,
+            message: 'Shipment tracking retrieved successfully'
+        });
     } catch (error) {
         console.error('DHL tracking error:', error);
-        res.status(500).json({ error: error.message });
+        
+        const statusCode = error.message === 'Tracking number not found' ? 404 : 500;
+        res.status(statusCode).json({
+            error: error.message,
+            code: 'TRACKING_ERROR'
+        });
     }
 };
 

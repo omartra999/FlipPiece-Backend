@@ -16,12 +16,19 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init({
     firebaseUid: {type: DataTypes.STRING, allowNull: false, unique: true},
+    stripeCustomerId: {type: DataTypes.STRING, allowNull: true, unique: true, comment: 'Stripe Customer ID for saved payments'},
     username: {type: DataTypes.STRING, allowNull: false, unique: true},
     email: {type: DataTypes.STRING, allowNull: false, unique: true},
     firstName: {type: DataTypes.STRING, allowNull: false},
     lastName: {type: DataTypes.STRING, allowNull: false},
     isAdmin: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
-    address: {type: DataTypes.JSON, allowNull: true},
+    address: {type: DataTypes.JSON, allowNull: true, validate: {
+      isValidAddress(value) {
+        if (value && (!value.street || !value.city || !value.postalCode || !value.country)) {
+          throw new Error('Address must include street, city, postalCode, and country');
+        }
+      }
+    }},
   
   }, {
     sequelize,

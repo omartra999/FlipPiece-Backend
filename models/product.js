@@ -23,7 +23,29 @@ module.exports = (sequelize, DataTypes) => {
     isShippable: DataTypes.BOOLEAN,
     isPickupOnly: DataTypes.BOOLEAN,
     images: DataTypes.JSON,
-    thumbnail: DataTypes.STRING}, {
+    thumbnail: DataTypes.STRING,
+    weight: {
+      type: DataTypes.DECIMAL(8,2),
+      allowNull: true,
+      comment: 'Weight in kg, used for shipping calculations'
+    },
+    dimensions: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      comment: 'Dimensions in cm {length, width, height}, used for shipping calculations'
+    },
+    shippingClass: {
+      type: DataTypes.ENUM('standard', 'express', 'fragile'),
+      allowNull: true,
+      comment: 'Shipping class for the product, used for shipping calculations'
+    },
+    hsCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Harmonized System Code for international shipping'
+    },
+
+  }, {
     sequelize,
     modelName: 'Product',
     tableName: 'product',

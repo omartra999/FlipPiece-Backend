@@ -1,5 +1,6 @@
 // services/webhook.service.js
 const { Order } = require('../models');
+const dhlService = require('./dhl.service');
 
 /**
  * Handle Stripe checkout.session.completed event
@@ -15,7 +16,14 @@ exports.handleCheckoutSessionCompleted = async (session) => {
     try {
         if (!orderId) throw new Error('No order ID in session');
         const order = await Order.findByPk(orderId);
+
         if (!order) throw new Error('Order not found');
+
+        // Prevent duplicate processing
+        if (order.paymentStatus !== 'pending') {
+            console.warn(`Order ${orderId} already processed with status ${order.paymentStatus}`);
+            return;
+        }
 
         const paymentStatus = paymentMethod === 'sepa_debit' || paymentMethod === 'bank_transfer' ? 'processing' : 'paid';
 
@@ -25,11 +33,30 @@ exports.handleCheckoutSessionCompleted = async (session) => {
             stripeSessionId: session.id,
             stripePaymentIntentId: paymentIntentId,
             shippingAddress: shipping?.address || order.shippingAddress,
-            email: customerEmail || order.email
+            email: customerEmail || order.email,
+            status: paymentStatus === 'paid' ? 'confirmed' : 'pending'
         });
+
+        // auto-create DHL shipment for paid orders
+        if (paymentStatus === 'paid' && order.shippingService) {
+            try {
+                const dhlShipment = await dhlService.createShipmentFromOrder(order);
+
+                await order.update({
+                    dhlShipmentId: dhlShipment.id,
+                    trackingNumber: dhlShipment.trackingNumber,
+                    status: 'processing',
+                });
+            } catch (shipmentError) {
+                console.error(`Error creating DHL shipment for order ${orderId}:`, shipmentError);
+            }
+        }
         console.log(`Order ${orderId} marked as paid (checkout.session.completed)`);
+        return order;
+
     } catch (err) {
         console.error('Error handling checkout.session.completed:', err);
+        throw err;
     }
 };
 

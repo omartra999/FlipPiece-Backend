@@ -99,71 +99,37 @@ exports.getShippingQuote = async (quoteData) => {
  * @returns {Promise<Object>} DHL shipment response
  */
 exports.createShipmentFromOrder = async (order) => {
-    try {
-        if (!order.shippingAddress) {
-            throw new Error('Shipping address is required for DHL shipment');
-        }
-
-        const shipmentData = {
-            shipmentDetails: {
-                service: order.shippingService || 'standard',
-                packageDetails: calculatePackageDetails(order.items),
-                shipmentTimestamp: new Date().toISOString(),
-                reference: order.orderNumber
-            },
-            pickup: {
-                address: {
-                    name: process.env.COMPANY_NAME || 'FlipPiece',
-                    addressLine1: process.env.COMPANY_ADDRESS || 'Company Street 1',
-                    city: process.env.COMPANY_CITY || 'Munich',
-                    postalCode: process.env.COMPANY_POSTAL_CODE || '80331',
-                    countryCode: 'DE'
-                },
-                contactInformation: {
-                    email: process.env.COMPANY_EMAIL || 'info@flippiece.com',
-                    phone: process.env.COMPANY_PHONE || '+49123456789'
-                }
-            },
-            delivery: {
-                address: {
-                    name: order.customerName || 'Customer',
-                    addressLine1: order.shippingAddress.line1,
-                    addressLine2: order.shippingAddress.line2 || '',
-                    city: order.shippingAddress.city,
-                    postalCode: order.shippingAddress.postal_code,
-                    countryCode: order.shippingAddress.country || 'DE'
-                },
-                contactInformation: {
-                    email: order.customerEmail,
-                    phone: order.customerPhone || ''
-                }
-            }
-        };
-
-        const response = await axios.post(
-            `${DHL_BASE_URL}/shipments/v2`,
-            shipmentData,
-            {
-                headers: {
-                    'DHL-API-Key': DHL_API_KEY,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-
-        return {
-            shipmentId: response.data.shipmentId,
-            trackingNumber: response.data.trackingNumber,
-            estimatedDelivery: response.data.estimatedDelivery,
-            shippingLabel: response.data.shippingLabel
-        };
-    } catch (error) {
-        console.error('DHL shipment creation error:', error.response?.data || error.message);
-        throw error.response ? error.response.data : error;
+  try {
+    if (!order.shippingAddress) {
+      throw new Error('Order must have a shipping address');
     }
+    
+    // Calculate total weight from items
+    const totalWeight = order.items?.reduce((sum, item) => {
+      return sum + ((item.weight || 0.5) * item.quantity);
+    }, 0) || 1;
+    
+    const shipmentData = {
+      customerDetails: {
+        name: order.customerName,
+        email: order.customerEmail,
+        phone: order.customerPhone
+      },
+      shippingAddress: order.shippingAddress,
+      items: order.items,
+      orderNumber: order.orderNumber,
+      totalValue: order.total,
+      totalWeight: totalWeight,
+      currency: order.currency || 'EUR'
+    };
+    
+    const shipment = await this.createShipment(shipmentData);
+    return shipment;
+  } catch (error) {
+    console.error('Error creating shipment from order:', error);
+    throw error;
+  }
 };
-
 /**
  * Create a DHL shipment (legacy method - kept for backward compatibility)
  * @param {Object} shipmentData

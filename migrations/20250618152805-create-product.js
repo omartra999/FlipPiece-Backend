@@ -42,13 +42,34 @@ module.exports = {
         defaultValue: false,
 
       },
+      weight: {
+        type: Sequelize.DECIMAL(8,2),
+        allowNull: true,
+        comment: 'Weight in kg, used for shipping calculations'
+      },
+      dimensions: {
+        type: Sequelize.JSON,
+        allowNull: true,
+        comment: 'Dimensions in cm {length, width, height}, used for shipping calculations',
+      },
+      shippingClass: {
+        type: Sequelize.ENUM('standard', 'express', 'fragile'),
+        allowNull: true,
+        comment: 'Shipping class for the product, used for shipping calculations'
+      },
+      hsCode: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        comment: 'Harmonized System Code for international shipping'
+      },
+
       images: {
         type: Sequelize.JSON
       },
       thumbnail: {
-  type: Sequelize.STRING,
-  allowNull: true
-},
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       
       createdAt: {
         allowNull: false,

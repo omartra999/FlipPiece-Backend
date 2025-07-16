@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        isValidateTrackingNumber(value) {
+        validateTrackingNumber(value) {
           if (value && !/^[0-9]{10,12}$|^[A-Z]{2}[0-9]{9}[A-Z]{2}$/.test(value)) {
             throw new Error('Invalid tracking number format');
           }

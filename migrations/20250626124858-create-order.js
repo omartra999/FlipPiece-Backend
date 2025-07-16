@@ -146,6 +146,11 @@ module.exports = {
     await queryInterface.addIndex('order', ['stripeSessionId']);
     await queryInterface.addIndex('order', ['trackingNumber']);
     await queryInterface.addIndex('order', ['createdAt']);
+
+    // Compound indexes for common API queries
+    await queryInterface.addIndex('order', ['firebaseUid', 'status']);
+    await queryInterface.addIndex('order', ['paymentStatus', 'status']);
+    await queryInterface.addIndex('order', ['dhlShipmentId', 'trackingNumber']);
   },
 
   async down(queryInterface, Sequelize) {

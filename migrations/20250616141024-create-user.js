@@ -10,10 +10,16 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       firebaseUid: {
-  type: Sequelize.STRING,
-  allowNull: false,
-  unique: true
-},
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+      },
+      stripeCustomerId: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true,
+        comment: 'Stripe Customer ID for saved payments'
+      },
       username: {
         allowNull: false,
         unique: true,
@@ -36,6 +42,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.JSON
       },
+      phone: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       isAdmin: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
@@ -50,6 +60,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    await queryInterface.addIndex('user', ['firebaseUid']);
+    await queryInterface.addIndex('user', ['stripeCustomerId']);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('user');

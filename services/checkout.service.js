@@ -271,3 +271,25 @@ exports.validateWebhookSignature = (payload, signature) => {
         throw error;
     }
 };
+
+exports.createStripeCustomer = async (user) => {
+    try{
+        if (user.stripeCustomerId) {
+            return user.stripeCustomerId; // Return existing customer ID
+        }
+
+        const customer = await stripe.customers.create({
+            email: user.email,
+            name: `${user.firstName} ${user.lastName}`,
+            metadata: {
+                firebaseUid: user.firebaseUid,
+                username: user.username
+            }
+        });
+        await user.update({ stripeCustomerId: customer.id }); // Save customer ID to user model
+        return customer.id;
+    } catch (error) {
+        console.error('Error creating Stripe customer:', error);
+        throw error;
+    }
+};

@@ -22,6 +22,15 @@ module.exports = (sequelize, DataTypes) => {
     firstName: {type: DataTypes.STRING, allowNull: false},
     lastName: {type: DataTypes.STRING, allowNull: false},
     isAdmin: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
+    phone: {type: DataTypes.STRING, allowNull: true,
+      validate: {
+        validatePhone(value) {
+          if (value && !/^\+?[1-9]\d{1,14}$/.test(value)) {
+            throw new Error('Phone number must be in E.164 format');
+          }
+        }
+      }
+    },
     address: {type: DataTypes.JSON, allowNull: true, validate: {
       isValidAddress(value) {
         if (value && (!value.street || !value.city || !value.postalCode || !value.country)) {

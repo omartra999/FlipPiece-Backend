@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Gallery extends Model {
     /**
@@ -14,13 +12,36 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Gallery.init({
-    id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
-    title: { type: DataTypes.STRING, allowNull: false },
-    description: { type: DataTypes.STRING, allowNull: true },
-    mediaUrl: { type: DataTypes.STRING, allowNull: false },
-    mediaType: { type: DataTypes.ENUM('image', 'video'), allowNull: false },
-    createdAt: { type: DataTypes.DATE, allowNull: false },
-    updatedAt: { type: DataTypes.DATE, allowNull: false }
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    mediaUrl: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    mediaType: {
+      type: DataTypes.ENUM('image', 'video'),
+      allowNull: false
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Gallery',

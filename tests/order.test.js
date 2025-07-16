@@ -1,4 +1,6 @@
-const { Order, User, Product } = require('../models');
+const {
+  Order, User, Product
+} = require('../models');
 const orderService = require('../services/order.service');
 
 describe('Order Service', () => {
@@ -6,9 +8,15 @@ describe('Order Service', () => {
 
   beforeEach(async () => {
     // Clean up data only, not schema
-    await Order.destroy({ where: {} });
-    await User.destroy({ where: {} });
-    await Product.destroy({ where: {} });
+    await Order.destroy({
+      where: {}
+    });
+    await User.destroy({
+      where: {}
+    });
+    await Product.destroy({
+      where: {}
+    });
 
     // Create test user
     testUser = await User.create({
@@ -27,7 +35,16 @@ describe('Order Service', () => {
       price: 29.99,
       category: 'fashion',
       stock: 10,
-      options: { sizes: ['M', 'L'], colors: ['red', 'blue'] },
+      options: {
+        sizes: [
+          'M',
+          'L'
+        ],
+        colors: [
+          'red',
+          'blue'
+        ]
+      },
       isShippable: true,
       isPickupOnly: false,
       images: ['test1.jpg'],
@@ -60,7 +77,7 @@ describe('Order Service', () => {
       };
 
       const order = await orderService.createOrder(orderData);
-      
+
       expect(order).toBeTruthy();
       expect(order.firebaseUid).toBe(testUser.firebaseUid);
       expect(order.total).toBe('29.99');
@@ -103,7 +120,7 @@ describe('Order Service', () => {
 
     test('returns order with user data when found', async () => {
       const order = await orderService.getOrderById(testOrder.id);
-      
+
       expect(order).toBeTruthy();
       expect(order.id).toBe(testOrder.id);
       expect(order.user).toBeTruthy();
@@ -122,16 +139,36 @@ describe('Order Service', () => {
       // Create multiple orders for the test user
       await orderService.createOrder({
         firebaseUid: testUser.firebaseUid,
-        shippingAddress: { street: '123 St', city: 'City', postalCode: '12345', country: 'Germany' },
-        billingAddress: { street: '123 St', city: 'City', postalCode: '12345', country: 'Germany' },
+        shippingAddress: {
+          street: '123 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
+        billingAddress: {
+          street: '123 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
         total: 29.99,
         status: 'pending'
       });
 
       await orderService.createOrder({
         firebaseUid: testUser.firebaseUid,
-        shippingAddress: { street: '456 St', city: 'City', postalCode: '12345', country: 'Germany' },
-        billingAddress: { street: '456 St', city: 'City', postalCode: '12345', country: 'Germany' },
+        shippingAddress: {
+          street: '456 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
+        billingAddress: {
+          street: '456 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
         total: 59.98,
         status: 'confirmed'
       });
@@ -139,7 +176,7 @@ describe('Order Service', () => {
 
     test('returns paginated orders for user', async () => {
       const result = await orderService.getOrdersByUser(testUser.firebaseUid, 1, 5);
-      
+
       expect(result).toHaveProperty('orders');
       expect(result).toHaveProperty('pagination');
       expect(Array.isArray(result.orders)).toBe(true);
@@ -165,8 +202,18 @@ describe('Order Service', () => {
     beforeEach(async () => {
       testOrder = await orderService.createOrder({
         firebaseUid: testUser.firebaseUid,
-        shippingAddress: { street: '123 St', city: 'City', postalCode: '12345', country: 'Germany' },
-        billingAddress: { street: '123 St', city: 'City', postalCode: '12345', country: 'Germany' },
+        shippingAddress: {
+          street: '123 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
+        billingAddress: {
+          street: '123 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
         total: 29.99,
         status: 'pending'
       });
@@ -187,8 +234,18 @@ describe('Order Service', () => {
     beforeEach(async () => {
       testOrder = await orderService.createOrder({
         firebaseUid: testUser.firebaseUid,
-        shippingAddress: { street: '123 St', city: 'City', postalCode: '12345', country: 'Germany' },
-        billingAddress: { street: '123 St', city: 'City', postalCode: '12345', country: 'Germany' },
+        shippingAddress: {
+          street: '123 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
+        billingAddress: {
+          street: '123 St',
+          city: 'City',
+          postalCode: '12345',
+          country: 'Germany'
+        },
         total: 29.99,
         status: 'pending'
       });
@@ -196,7 +253,7 @@ describe('Order Service', () => {
 
     test('updates order status successfully', async () => {
       const updatedOrder = await orderService.setOrderStatus(testOrder.id, 'confirmed');
-      
+
       expect(updatedOrder.status).toBe('confirmed');
       expect(updatedOrder.id).toBe(testOrder.id);
     });
@@ -208,12 +265,18 @@ describe('Order Service', () => {
 
     test('validates status transitions', async () => {
       // Test valid status transitions
-      const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
-      
+      const validStatuses = [
+        'pending',
+        'confirmed',
+        'shipped',
+        'delivered',
+        'cancelled'
+      ];
+
       for (const status of validStatuses) {
         const updatedOrder = await orderService.setOrderStatus(testOrder.id, status);
         expect(updatedOrder.status).toBe(status);
       }
     });
   });
-}); 
+});

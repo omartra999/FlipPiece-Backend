@@ -3,7 +3,9 @@ const galleryService = require('../services/gallery.service');
 
 describe('Gallery Service', () => {
   beforeEach(async () => {
-    await Gallery.sync({ force: true });
+    await Gallery.sync({
+      force: true
+    });
   });
 
   afterAll(async () => {
@@ -54,7 +56,9 @@ describe('Gallery Service', () => {
       mediaUrl: 'http://example.com/image.jpg',
       mediaType: 'image',
     });
-    const updated = await galleryService.updateGalleryItem(created.id, { title: 'Updated Title' });
+    const updated = await galleryService.updateGalleryItem(created.id, {
+      title: 'Updated Title'
+    });
     expect(updated.title).toBe('Updated Title');
   });
 
@@ -77,7 +81,9 @@ describe('Gallery Service', () => {
   });
 
   test('updateGalleryItem returns null for non-existent item', async () => {
-    const updated = await galleryService.updateGalleryItem(99999, { title: 'Nope' });
+    const updated = await galleryService.updateGalleryItem(99999, {
+      title: 'Nope'
+    });
     expect(updated).toBeNull();
   });
 
@@ -85,4 +91,4 @@ describe('Gallery Service', () => {
     const deleted = await galleryService.deleteGalleryItem(99999);
     expect(deleted).toBe(false);
   });
-}); 
+});

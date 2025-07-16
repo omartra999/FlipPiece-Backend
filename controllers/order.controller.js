@@ -1,7 +1,9 @@
 const orderService = require('../services/order.service');
 const checkoutService = require('../services/checkout.service');
 const dhlService = require('../services/dhl.service');
-const { Order, User } = require('../models');
+const {
+  Order, User
+} = require('../models');
 
 exports.createOrder = async (req, res) => {
   try {
@@ -10,7 +12,9 @@ exports.createOrder = async (req, res) => {
     res.status(201).json(order);
   } catch (error) {
     console.error('Error creating order:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
 
@@ -19,12 +23,16 @@ exports.getOrderById = async (req, res) => {
     const orderId = req.params.id;
     const order = await orderService.getOrderById(orderId);
     if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
+      return res.status(404).json({
+        error: 'Order not found'
+      });
     }
     res.status(200).json(order);
   } catch (error) {
     console.error('Error fetching order:', error);
-    res.status(500).json({ error: 'Failed to fetch order' });
+    res.status(500).json({
+      error: 'Failed to fetch order'
+    });
   }
 };
 
@@ -33,12 +41,14 @@ exports.getOrdersByUser = async (req, res) => {
     const firebaseUid = req.params.firebaseUid;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    
+
     const result = await orderService.getOrdersByUser(firebaseUid, page, limit);
     res.status(200).json(result);
   } catch (error) {
     console.error('Error fetching orders for user:', error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
+    res.status(500).json({
+      error: 'Failed to fetch orders'
+    });
   }
 };
 
@@ -47,12 +57,14 @@ exports.getOrdersByEmail = async (req, res) => {
     const email = req.params.email;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    
+
     const result = await orderService.getOrdersByEmail(email, page, limit);
     res.status(200).json(result);
   } catch (error) {
     console.error('Error fetching orders for email:', error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
+    res.status(500).json({
+      error: 'Failed to fetch orders'
+    });
   }
 };
 
@@ -60,12 +72,14 @@ exports.getAllOrders = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 50;
-    
+
     const result = await orderService.getAllOrders(page, limit);
     res.status(200).json(result);
   } catch (error) {
     console.error('Error fetching all orders:', error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
+    res.status(500).json({
+      error: 'Failed to fetch orders'
+    });
   }
 };
 
@@ -76,7 +90,9 @@ exports.getOrderStatus = async (req, res) => {
     res.status(200).json(status);
   } catch (error) {
     console.error('Error fetching order status:', error);
-    res.status(500).json({ error: 'Failed to fetch order status' });
+    res.status(500).json({
+      error: 'Failed to fetch order status'
+    });
   }
 };
 
@@ -88,7 +104,9 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(200).json(updatedOrder);
   } catch (error) {
     console.error('Error updating order status:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
 
@@ -108,35 +126,41 @@ exports.completeOrder = async (req, res) => {
     });
   } catch (error) {
     console.error('Error completing order:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
 
 exports.checkout = async (req, res) => {
   try {
-    const { 
-      firebaseUid, 
-      customerEmail, 
-      customerName, 
+    const {
+      firebaseUid,
+      customerEmail,
+      customerName,
       customerPhone,
-      items, 
+      items,
       shippingAddress,
       shippingService,
-      successUrl, 
+      successUrl,
       cancelUrl,
       currency = 'EUR'
     } = req.body;
 
     // Validate required fields
     if (!customerEmail || !items || !items.length) {
-      return res.status(400).json({ error: 'Customer email and items are required' });
+      return res.status(400).json({
+        error: 'Customer email and items are required'
+      });
     }
 
     // Create or find user if firebaseUid provided
     if (firebaseUid) {
       const { User } = require('../models');
       await User.findOrCreate({
-        where: { firebaseUid },
+        where: {
+          firebaseUid
+        },
         defaults: {
           firebaseUid,
           email: customerEmail,
@@ -187,7 +211,7 @@ exports.checkout = async (req, res) => {
     const order = await orderService.createOrder(orderData);
 
     // Create Stripe session with calculated total
-const session = await checkoutService.createCheckoutSession(
+    const session = await checkoutService.createCheckoutSession(
       {
         items: order.items,
         subtotal: order.subtotal,
@@ -207,7 +231,9 @@ const session = await checkoutService.createCheckoutSession(
     );
 
     // Save session ID to order
-    await order.update({ stripeSessionId: session.id });
+    await order.update({
+      stripeSessionId: session.id
+    });
 
     res.status(201).json({
       message: 'Order created and checkout session initialized',
@@ -222,7 +248,9 @@ const session = await checkoutService.createCheckoutSession(
     });
   } catch (error) {
     console.error('Error in checkout:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message
+    });
   }
 };
 
@@ -234,6 +262,8 @@ exports.setOrderStatus = async (req, res) => {
     res.status(200).json(updatedOrder);
   } catch (error) {
     console.error('Error setting order status:', error);
-    res.status(500).json({ error: 'Failed to set order status' });
+    res.status(500).json({
+      error: 'Failed to set order status'
+    });
   }
 };

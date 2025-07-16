@@ -120,4 +120,4 @@ module.exports = {
   validateDHL: validate(dhlShipmentSchema),
   validateCheckout: validate(checkoutSchema),
   validateRefund: validate(refundSchema)
-}; 
+};

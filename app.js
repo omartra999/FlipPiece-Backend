@@ -1,5 +1,7 @@
 const express = require('express');
-const { PORT, URL } = require('./config/env.js');
+const {
+  PORT, URL
+} = require('./config/env.js');
 const cookieParser = require('cookie-parser');
 const cors = require('cors'); //to be used: for cross-origin resource sharing after creating frontend
 const helmet = require('helmet'); //to be used: for security
@@ -36,9 +38,13 @@ const app = express();
 
 app.use(limiter);
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({
+  limit: '10mb'
+}));
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true

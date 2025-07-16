@@ -1,4 +1,6 @@
-const { Order, User } = require('../models');
+const {
+  Order, User
+} = require('../models');
 const dhlService = require('./dhl.service');
 
 exports.createOrder = async (orderData) => {
@@ -34,8 +36,8 @@ exports.createOrder = async (orderData) => {
 
     // Calculate total if not provided
     if (!orderData.total) {
-      orderData.total = parseFloat(orderData.subtotal || 0) + 
-                       parseFloat(orderData.shippingCost || 0) + 
+      orderData.total = parseFloat(orderData.subtotal || 0) +
+                       parseFloat(orderData.shippingCost || 0) +
                        parseFloat(orderData.tax || 0);
     }
 
@@ -60,11 +62,13 @@ exports.createOrder = async (orderData) => {
 exports.getOrderById = async (orderId) => {
   try {
     const order = await Order.findByPk(orderId, {
-      include: [{
-        model: User,
-        as: 'user',
-        required: false // Allow null for guest orders
-      }]
+      include: [
+        {
+          model: User,
+          as: 'user',
+          required: false // Allow null for guest orders
+        }
+      ]
     });
     return order;
   } catch (error) {
@@ -77,17 +81,31 @@ exports.getOrdersByUser = async (firebaseUid, page = 1, limit = 10) => {
   try {
     const offset = (page - 1) * limit;
     const orders = await Order.findAndCountAll({
-      where: { firebaseUid },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['username', 'email', 'firstName', 'lastName']
-      }],
+      where: {
+        firebaseUid
+      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: [
+            'username',
+            'email',
+            'firstName',
+            'lastName'
+          ]
+        }
+      ],
       limit,
       offset,
-      order: [['createdAt', 'DESC']]
+      order: [
+        [
+          'createdAt',
+          'DESC'
+        ]
+      ]
     });
-    
+
     return {
       orders: orders.rows,
       pagination: {
@@ -107,18 +125,32 @@ exports.getOrdersByEmail = async (email, page = 1, limit = 10) => {
   try {
     const offset = (page - 1) * limit;
     const orders = await Order.findAndCountAll({
-      where: { customerEmail: email },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['username', 'email', 'firstName', 'lastName'],
-        required: false
-      }],
+      where: {
+        customerEmail: email
+      },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: [
+            'username',
+            'email',
+            'firstName',
+            'lastName'
+          ],
+          required: false
+        }
+      ],
       limit,
       offset,
-      order: [['createdAt', 'DESC']]
+      order: [
+        [
+          'createdAt',
+          'DESC'
+        ]
+      ]
     });
-    
+
     return {
       orders: orders.rows,
       pagination: {
@@ -140,8 +172,10 @@ exports.updateOrderStatus = async (orderId, status) => {
     if (!order) {
       throw new Error('Order not found');
     }
-    
-    await order.update({ status });
+
+    await order.update({
+      status
+    });
     return order;
   } catch (error) {
     console.error('Error updating order status:', error);
@@ -155,8 +189,10 @@ exports.updatePaymentStatus = async (orderId, paymentStatus) => {
     if (!order) {
       throw new Error('Order not found');
     }
-    
-    await order.update({ paymentStatus });
+
+    await order.update({
+      paymentStatus
+    });
     return order;
   } catch (error) {
     console.error('Error updating payment status:', error);
@@ -174,20 +210,22 @@ exports.completeOrder = async (orderId) => {
     // Only process if order is paid and not already processed
     if (order.paymentStatus === 'paid' && order.status === 'pending') {
       // Update order status to confirmed
-      await order.update({ status: 'confirmed' });
+      await order.update({
+        status: 'confirmed'
+      });
 
       // Create DHL shipment if shipping address is available
       if (order.shippingAddress && !order.dhlShipmentId) {
         try {
           const shipment = await dhlService.createShipmentFromOrder(order);
-          
+
           await order.update({
             dhlShipmentId: shipment.shipmentId,
             trackingNumber: shipment.trackingNumber,
             estimatedDelivery: shipment.estimatedDelivery,
             status: 'processing'
           });
-          
+
           console.log(`Shipment created for order ${order.orderNumber}`);
         } catch (shipmentError) {
           console.error('Failed to create shipment:', shipmentError);
@@ -240,17 +278,29 @@ exports.getAllOrders = async (page = 1, limit = 50) => {
   try {
     const offset = (page - 1) * limit;
     const orders = await Order.findAndCountAll({
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['username', 'email', 'firstName', 'lastName'],
-        required: false
-      }],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: [
+            'username',
+            'email',
+            'firstName',
+            'lastName'
+          ],
+          required: false
+        }
+      ],
       limit,
       offset,
-      order: [['createdAt', 'DESC']]
+      order: [
+        [
+          'createdAt',
+          'DESC'
+        ]
+      ]
     });
-    
+
     return {
       orders: orders.rows,
       pagination: {

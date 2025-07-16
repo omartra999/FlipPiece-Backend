@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     /**
@@ -20,12 +18,22 @@ module.exports = (sequelize, DataTypes) => {
     category: DataTypes.ENUM('fashion', 'möbel', 'design'),
     stock: DataTypes.INTEGER,
     options: DataTypes.JSON,
-    isShippable: {type:DataTypes.BOOLEAN, allowNull: false, defaultValue: true, comment: 'Indicates if the product can be shipped'},
-    isPickupOnly: {type:DataTypes.BOOLEAN, allowNull: false, defaultValue: false, comment: 'Indicates if the product is pickup only'},
+    isShippable: {
+      type:DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+      comment: 'Indicates if the product can be shipped'
+    },
+    isPickupOnly: {
+      type:DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      comment: 'Indicates if the product is pickup only'
+    },
     images: DataTypes.JSON,
     thumbnail: DataTypes.STRING,
     weight: {
-      type: DataTypes.DECIMAL(8,2),
+      type: DataTypes.DECIMAL(8, 2),
       allowNull: true,
       comment: 'Weight in kg, used for shipping calculations'
     },

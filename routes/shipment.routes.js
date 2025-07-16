@@ -7,4 +7,4 @@ const shipmentController = require('../controllers/shipment.controller');
 shipmentRouter.get('/track/:trackingNumber', shipmentController.track);
 
 
-module.exports = shipmentRouter; 
+module.exports = shipmentRouter;

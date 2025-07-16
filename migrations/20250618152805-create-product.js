@@ -43,7 +43,7 @@ module.exports = {
 
       },
       weight: {
-        type: Sequelize.DECIMAL(8,2),
+        type: Sequelize.DECIMAL(8, 2),
         allowNull: true,
         comment: 'Weight in kg, used for shipping calculations'
       },
@@ -70,7 +70,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-      
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

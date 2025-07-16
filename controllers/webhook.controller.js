@@ -4,42 +4,46 @@ const stripe = require('stripe')(_STRIPE_SECRET_KEY);
 const webhookService = require('../services/webhook.service');
 
 exports.handleWebhook = async (req, res) => {
-    const sig = req.headers['stripe-signature'];
-    let event;
+  const sig = req.headers['stripe-signature'];
+  let event;
 
-    try {
-        event = stripe.webhooks.constructEvent(req.body, sig, _STRIPE_WEBHOOK_SECRET);
-    } catch (error) {
-        console.error('Error constructing event:', error);
-        return res.status(400).json({ error: 'Invalid webhook signature' });
-    }
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, _STRIPE_WEBHOOK_SECRET);
+  } catch (error) {
+    console.error('Error constructing event:', error);
+    return res.status(400).json({
+      error: 'Invalid webhook signature'
+    });
+  }
 
-    // Handle different event types
-    switch (event.type) {
-        case 'checkout.session.completed':
-            await webhookService.handleCheckoutSessionCompleted(event.data.object);
-            break;
-        case 'payment_intent.succeeded':
-            await webhookService.handlePaymentIntentSucceeded(event.data.object);
-            break;
-        case 'payment_intent.payment_failed':
-            await webhookService.handlePaymentIntentFailed(event.data.object);
-            break;
-        case 'charge.refunded':
-            webhookService.handleChargeRefunded(event.data.object);
-            break;
-        case 'mandate.updated':
-            webhookService.handleMandateUpdated(event.data.object);
-            break;
-        case 'payment_method.attached':
-            webhookService.handlePaymentMethodAttached(event.data.object);
-            break;
-        default:
-            console.log(`Unhandled event type ${event.type}`);
-            break;
-    }
+  // Handle different event types
+  switch (event.type) {
+  case 'checkout.session.completed':
+    await webhookService.handleCheckoutSessionCompleted(event.data.object);
+    break;
+  case 'payment_intent.succeeded':
+    await webhookService.handlePaymentIntentSucceeded(event.data.object);
+    break;
+  case 'payment_intent.payment_failed':
+    await webhookService.handlePaymentIntentFailed(event.data.object);
+    break;
+  case 'charge.refunded':
+    webhookService.handleChargeRefunded(event.data.object);
+    break;
+  case 'mandate.updated':
+    webhookService.handleMandateUpdated(event.data.object);
+    break;
+  case 'payment_method.attached':
+    webhookService.handlePaymentMethodAttached(event.data.object);
+    break;
+  default:
+    console.log(`Unhandled event type ${event.type}`);
+    break;
+  }
 
 
-    res.status(200).json({ received: true });
-}
+  res.status(200).json({
+    received: true
+  });
+};
 

@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
     static associate(models) {
@@ -11,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'user',
         required: false,
       });
-      
+
       // Remove OrderItem association since we're using JSON
     }
   }
@@ -145,10 +143,10 @@ module.exports = (sequelize, DataTypes) => {
           const random = Math.random().toString(36).substring(2, 6).toUpperCase();
           order.orderNumber = `FP-${timestamp}-${random}`;
         }
-        
+
         // Set guest status
         order.isGuest = !order.firebaseUid;
-        
+
         // Calculate totals if not provided
         if (order.items && order.items.length > 0) {
           order.subtotal = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -159,18 +157,22 @@ module.exports = (sequelize, DataTypes) => {
         // Sync order status with payment/shipping status
         if (order.changed('paymentStatus') && order.paymentStatus === 'paid') {
           if (order.status === 'pending') {
-            await order.update({ status: 'confirmed' }, { 
+            await order.update({
+              status: 'confirmed'
+            }, {
               transaction: options.transaction,
-              silent: true 
+              silent: true
             });
           }
         }
-        
+
         if (order.changed('trackingNumber') && order.trackingNumber) {
           if (order.status === 'confirmed') {
-            await order.update({ status: 'shipped' }, { 
+            await order.update({
+              status: 'shipped'
+            }, {
               transaction: options.transaction,
-              silent: true 
+              silent: true
             });
           }
         }

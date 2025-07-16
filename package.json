@@ -5,7 +5,10 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon --watch . --ext js,json app.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "fix": "eslint . --fix"
   },
   "dependencies": {
     "axios": "^1.10.0",
@@ -37,6 +40,11 @@
     "stripe-cli": "^0.1.0"
   },
   "devDependencies": {
+    "eslint": "^9.31.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-plugin-jest": "^29.0.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-security": "^3.0.1",
     "jest": "^30.0.2",
     "supertest": "^7.1.1"
   }

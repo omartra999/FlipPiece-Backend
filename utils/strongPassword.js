@@ -3,4 +3,6 @@ function isStrongPassword(password) {
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 }
 
-module.exports = { isStrongPassword }
+module.exports = {
+  isStrongPassword
+};

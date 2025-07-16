@@ -3,7 +3,9 @@ const productService = require('../services/product.service');
 
 describe('Product Service', () => {
   beforeEach(async () => {
-    await Product.sync({ force: true });
+    await Product.sync({
+      force: true
+    });
   });
 
   afterAll(async () => {
@@ -17,7 +19,10 @@ describe('Product Service', () => {
       price: 10.99,
       category: 'fashion',
       stock: 5,
-      options: { sizes: ['M'], colors: ['red'] },
+      options: {
+        sizes: ['M'],
+        colors: ['red']
+      },
       isShippable: true,
       isPickupOnly: false,
       images: ['img1.jpg'],
@@ -37,7 +42,10 @@ describe('Product Service', () => {
       price: 10.99,
       category: 'fashion',
       stock: 5,
-      options: { sizes: ['M'], colors: ['red'] },
+      options: {
+        sizes: ['M'],
+        colors: ['red']
+      },
       isShippable: true,
       isPickupOnly: false,
       images: ['img1.jpg'],
@@ -55,7 +63,10 @@ describe('Product Service', () => {
       price: 10.99,
       category: 'fashion',
       stock: 5,
-      options: { sizes: ['M'], colors: ['red'] },
+      options: {
+        sizes: ['M'],
+        colors: ['red']
+      },
       isShippable: true,
       isPickupOnly: false,
       images: ['img1.jpg'],
@@ -73,13 +84,19 @@ describe('Product Service', () => {
       price: 10.99,
       category: 'fashion',
       stock: 5,
-      options: { sizes: ['M'], colors: ['red'] },
+      options: {
+        sizes: ['M'],
+        colors: ['red']
+      },
       isShippable: true,
       isPickupOnly: false,
       images: ['img1.jpg'],
       thumbnail: 'img1.jpg'
     });
-    const updated = await productService.updateProduct(created.id, { price: 15.99, stock: 10 });
+    const updated = await productService.updateProduct(created.id, {
+      price: 15.99,
+      stock: 10
+    });
     expect(Number(updated.price)).toBeCloseTo(15.99);
     expect(updated.stock).toBe(10);
   });
@@ -91,7 +108,10 @@ describe('Product Service', () => {
       price: 10.99,
       category: 'fashion',
       stock: 5,
-      options: { sizes: ['M'], colors: ['red'] },
+      options: {
+        sizes: ['M'],
+        colors: ['red']
+      },
       isShippable: true,
       isPickupOnly: false,
       images: ['img1.jpg'],
@@ -109,7 +129,9 @@ describe('Product Service', () => {
   });
 
   test('updateProduct returns null for non-existent product', async () => {
-    const updated = await productService.updateProduct(99999, { price: 20 });
+    const updated = await productService.updateProduct(99999, {
+      price: 20
+    });
     expect(updated).toBeNull();
   });
 
@@ -137,28 +159,29 @@ describe('Product Service', () => {
   });
 
   test('searchProducts finds products by title, description, or category', async () => {
-   try {await productService.createProduct({
-      title: 'Lamp',
-      description: 'A lamp for testing search',
-      price: 20,
-      category: 'design',
-      stock: 3,
-      options: {},
-      isShippable: true,
-      isPickupOnly: false,
-      images: [],
-      thumbnail: ''
-    });
+    try {
+      await productService.createProduct({
+        title: 'Lamp',
+        description: 'A lamp for testing search',
+        price: 20,
+        category: 'design',
+        stock: 3,
+        options: {},
+        isShippable: true,
+        isPickupOnly: false,
+        images: [],
+        thumbnail: ''
+      });
 
-    const byTitle = await productService.searchProducts('Lamp');
-    expect(byTitle.length).toBeGreaterThan(0);
-    console.log('byTitle: ', byTitle);
+      const byTitle = await productService.searchProducts('Lamp');
+      expect(byTitle.length).toBeGreaterThan(0);
+      console.log('byTitle: ', byTitle);
 
-    const byDesc = await productService.searchProducts('lamp');
-    expect(byDesc.length).toBeGreaterThan(0);
+      const byDesc = await productService.searchProducts('lamp');
+      expect(byDesc.length).toBeGreaterThan(0);
 
-    const byCategory = await productService.searchProducts('design');
-    expect(byCategory.length).toBeGreaterThan(0);
+      const byCategory = await productService.searchProducts('design');
+      expect(byCategory.length).toBeGreaterThan(0);
     } catch (error) {
       console.error('Error in searchProducts test:', error);
       throw error; // Re-throw to fail the test
@@ -179,7 +202,10 @@ describe('Product Service', () => {
       thumbnail: ''
     });
 
-    const filtered = await productService.filterProducts({ category: 'design', priceRange: '10-30' });
+    const filtered = await productService.filterProducts({
+      category: 'design',
+      priceRange: '10-30'
+    });
     expect(filtered.length).toBeGreaterThan(0);
     expect(filtered[0].category).toBe('design');
     expect(Number(filtered[0].price)).toBeGreaterThanOrEqual(10);
@@ -193,7 +219,7 @@ describe('Product Service', () => {
       price: 5,
       category: 'fashion',
       stock: 1,
-      options: "{not: 'json'}", 
+      options: '{not: \'json\'}',
       isShippable: true,
       isPickupOnly: false,
       images: [],

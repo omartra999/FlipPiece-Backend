@@ -16,7 +16,7 @@ async function sendConfirmationEmail(email, code) {
   const info = await transporter.sendMail({
     from: '"Flip-Piece" <no-reply@flip-piece.test>',
     to: email,
-    subject: "Your Flip-Piece Confirmation Code",
+    subject: 'Your Flip-Piece Confirmation Code',
     text: `Your confirmation code is: ${code}`,
     html: `<b>Your confirmation code is: ${code}</b>`,
   });
@@ -24,4 +24,6 @@ async function sendConfirmationEmail(email, code) {
   console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 }
 
-module.exports = { sendConfirmationEmail };
+module.exports = {
+  sendConfirmationEmail
+};

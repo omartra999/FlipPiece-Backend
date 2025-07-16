@@ -12,7 +12,7 @@ module.exports = {
       },
       firebaseUid: {
         type: Sequelize.STRING,
-        allowNull: true, 
+        allowNull: true,
         references: {
           model: 'user',
           key: 'firebaseUid'
@@ -148,9 +148,18 @@ module.exports = {
     await queryInterface.addIndex('order', ['createdAt']);
 
     // Compound indexes for common API queries
-    await queryInterface.addIndex('order', ['firebaseUid', 'status']);
-    await queryInterface.addIndex('order', ['paymentStatus', 'status']);
-    await queryInterface.addIndex('order', ['dhlShipmentId', 'trackingNumber']);
+    await queryInterface.addIndex('order', [
+      'firebaseUid',
+      'status'
+    ]);
+    await queryInterface.addIndex('order', [
+      'paymentStatus',
+      'status'
+    ]);
+    await queryInterface.addIndex('order', [
+      'dhlShipmentId',
+      'trackingNumber'
+    ]);
   },
 
   async down(queryInterface, Sequelize) {

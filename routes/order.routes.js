@@ -7,6 +7,6 @@ orderRouter.post('/', validateOrder, orderController.createOrder);
 orderRouter.post('/checkout', orderController.checkout);
 orderRouter.get('/:id', orderController.getOrderById);
 orderRouter.get('/user/:firebaseUid',  orderController.getOrdersByUser);
-orderRouter.get('/status/:id',  orderController.getOrderStatus)
+orderRouter.get('/status/:id',  orderController.getOrderStatus);
 
 module.exports = orderRouter;

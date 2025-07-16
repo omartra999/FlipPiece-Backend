@@ -1,4 +1,6 @@
-const { User, Product, Order, sequelize } = require('../models');
+const {
+  User, Product, Order, sequelize
+} = require('../models');
 const OrderItemModel = require('../models/orderItem');
 
 let OrderItem;
@@ -9,7 +11,9 @@ let order;
 describe('OrderItem Model', () => {
   beforeAll(async () => {
     // Sync all models
-    await sequelize.sync({ force: true });
+    await sequelize.sync({
+      force: true
+    });
     // Create a user
     user = await User.create({
       firebaseUid: 'test-uid',
@@ -26,7 +30,10 @@ describe('OrderItem Model', () => {
       price: 10.5,
       category: 'fashion',
       stock: 5,
-      options: { sizes: ['M'], colors: ['red'] },
+      options: {
+        sizes: ['M'],
+        colors: ['red']
+      },
       isShippable: true,
       isPickupOnly: false,
       images: ['img1.jpg'],
@@ -36,8 +43,14 @@ describe('OrderItem Model', () => {
     order = await Order.create({
       firebaseUid: user.firebaseUid,
       orderNumber: 'FP-TEST-ORDER',
-      shippingAddress: { street: '123 Test St', city: 'Testville' },
-      billingAddress: { street: '123 Test St', city: 'Testville' },
+      shippingAddress: {
+        street: '123 Test St',
+        city: 'Testville'
+      },
+      billingAddress: {
+        street: '123 Test St',
+        city: 'Testville'
+      },
       subtotal: 10.5,
       shippingCost: 0,
       tax: 0,
@@ -100,4 +113,4 @@ describe('OrderItem Model', () => {
     await item.save();
     expect(Number(item.totalPrice)).toBeCloseTo(24.0);
   });
-}); 
+});
